@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Build Output
+dist/
+
+# Editor temporary files
+# ( menyesuaikan dengan editor yang kamu gunakan )
+.vscode/
+.idea/
+
+# Testing tools (sesuaikan dengan library testing yang kamu gunakan)
+jest/*.json
+
+# IDE temporary files
+*.log
+*.pid
+
+# Compiled Typescript (if using Typescript)
+*.tsbuildinfo
+
+# IDE and OS specific (optional)
+.DS_Store # Mac
+Thumbs.db # Windows
+
+# Docs generation (if using tools like Storybook)
+.storybook/
+
+# Generated reports
+coverage/
+
+# Environment variables
+.env.local
+.env.development
+.env.production
+
+# Runtime-generated files
+*.snap
+
+# temporary directory by vite
+.vit
