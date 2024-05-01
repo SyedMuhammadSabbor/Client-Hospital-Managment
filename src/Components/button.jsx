@@ -1,3 +1,3 @@
 export default function Button(props){
-    return <button>{props.text}</button>
+    return <button className="bg-red-500">{props.text}</button>
 }
