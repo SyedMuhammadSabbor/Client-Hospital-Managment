@@ -1,14 +1,20 @@
-import React from "react";
-
-export default function FormInput(props) {
+export default function FormInput({
+  type,
+  placeholder,
+  value,
+  handleChange,
+  id,
+  required = false,
+}) {
   return (
     <input
-      type={props.type}
-      placeholder={props.placeholder}
-      value={props.value}
-      onChange={props.handleChange}
-      id={props.id}
-      className="bg-white  text-black my-1 px-3 py-2 border-designColor1 border border-solid rounded focus:outline-none focus:border-designColor2"
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={handleChange}
+      id={id}
+      required={required}
+      className="w-full bg-white  text-textColor my-1 p-1 border-designColor2 border rounded focus:outline-none focus:border-textColor"
     />
   );
 }
