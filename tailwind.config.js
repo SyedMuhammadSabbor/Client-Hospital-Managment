@@ -10,6 +10,21 @@ export default {
         designColor1: "#80CED7",
         designColor2: "#007EA7",
       },
+      animation: {
+        slideUpAndFadeOut: "slideUpAndFadeOutFrame 1s ease-out",
+      },
+      keyframes: {
+        slideUpAndFadeOutFrame: {
+          "0%": {
+            opacity: "0%",
+            bottom: "0%",
+          },
+          "100%": {
+            opacity: "100%",
+            bottom: "40%",
+          },
+        },
+      },
     },
   },
   plugins: [],
