@@ -3,10 +3,10 @@ import PatientMenu from "./menu";
 import AllDoctors from "./all-doctors";
 import Home from "./home";
 import Appointments from "./appointments";
-import AppointmentView from "./Components/appointmentView";
-import NotFound from "./not-found";
-import DoctorView from "./Components/doctorView";
-import NotificationView from "./Components/notificationView";
+import AppointmentView from "../../Components/appointmentView";
+import PateintNotFoundPage from "./not-found";
+import DoctorView from "../../Components/doctorView";
+import NotificationView from "../../Components/notificationView";
 import AllNotifications from "./notifications";
 import NewAppointment from "./new-appointment";
 
@@ -24,21 +24,21 @@ export default function Patient() {
 
             <Route path="/notifications">
               <Route path="" element={<AllNotifications />} />
-              <Route path=":notificationId" element={<NotificationView />} />
+              <Route path=":notificationId" element={<NotificationView viewRole="patient"/>} />
             </Route>
 
             <Route path="/doctors">
               <Route path="" element={<AllDoctors />} />
-              <Route path=":doctorId" element={<DoctorView />} />
+              <Route path=":doctorId" element={<DoctorView viewRole="patient"/>} />
             </Route>
 
             <Route path="/appointments">
               <Route path="" element={<Appointments />} />
               <Route path="new" element={<NewAppointment />} />
-              <Route path=":appointmentId" element={<AppointmentView />} />
+              <Route path=":appointmentId" element={<AppointmentView viewRole="patient" />} />
             </Route>
 
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<PateintNotFoundPage />} />
           </Route>
         </Routes>
       </div>

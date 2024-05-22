@@ -1,70 +1,94 @@
 import { useEffect, useState } from "react";
-import { SamplePatients } from "../../../sampleData/samplePatients";
-import Loader from "../../../Components/loader";
-import { SampleAppintments } from "../../../sampleData/sampleAppointments";
-import AppointmentTable from "../../../Components/appointmentsTable";
+import { SamplePatients } from "../sampleData/samplePatients";
+import { SampleAppintments } from "../sampleData/sampleAppointments";
+import Loader from "./loader";
+import AppointmentTable from "./appointmentsTable";
+import { useParams } from "react-router-dom";
+import { SampleDoctors } from "../sampleData/sampleDoctors";
 
 const itemsToShowAtATime = 5;
-const samplePatient = SamplePatients[0]
+const sampleDoctor = SampleDoctors[0];
 
-export default function Home() {
+export default function PatientView() {
+  const [doctor, setDoctor] = useState({});
+  const [doctorLoading, setDoctorLoading] = useState(true);
+
   const [patient, setPatient] = useState({});
-  const [scheduledAppointments, setScheduledAppointmnts] = useState([]);
-  const [scheduledAppointmentsLoading, setScheduledAppointmentsLoading] =
-    useState(true);
-  const [isLoading, setIsLoading] = useState(true);
+  const [patientLaoding, setPatientLoading] = useState(true);
+
+  const [appointments, setAppointments] = useState([]);
+  const [appointmentsLoading, setAppointmentsLoading] = useState(true);
   const [itemsRange, setItemsRange] = useState({
     start: 0,
     end: itemsToShowAtATime - 1,
   });
   const [totalItems, setTotalItems] = useState(0);
 
-  const makePatientDataRequest = () => {
-    setIsLoading(true);
+  const params = useParams();
+  const { patientId } = params;
+
+  const makeDoctorDataRequest = () => {
+    setDoctorLoading(true);
     setTimeout(() => {
-      setPatient(samplePatient);
-      setIsLoading(false);
+      setDoctor(sampleDoctor);
+      setDoctorLoading(false);
+    }, 500);
+  };
+  const makePatientDataRequest = () => {
+    setPatientLoading(true);
+    setTimeout(() => {
+      const tempPatient = SamplePatients.find(
+        (patientItem) => patientItem.id == patientId
+      );
+      setPatient(tempPatient);
+      setPatientLoading(false);
     }, 500);
   };
 
-  const makeScheduledAppointmentsRequest = async () => {
-    setScheduledAppointmentsLoading(true);
+  const makeAppointmentsDataRequest = async () => {
+    console.log("ok");
+    setPatientLoading(true);
     setTimeout(() => {
+      const patientAppointmentIds = patient.appointmentIds;
       const tempAppointments = SampleAppintments.filter(
         (appointmentItem) =>
-          appointmentItem.status == "scheduled" &&
-          appointmentItem.patientId == patient.id
+          appointmentItem.doctorId == doctor.id &&
+          patientAppointmentIds.includes(appointmentItem.id)
       );
-      setScheduledAppointmnts(
+      setAppointments(
         tempAppointments.slice(itemsRange.start, itemsRange.end + 1)
       );
       setTotalItems(tempAppointments.length); // for now
-      setScheduledAppointmentsLoading(false);
+      setAppointmentsLoading(false);
     }, 500);
   };
 
   useEffect(() => {
-    makePatientDataRequest();
+    makeDoctorDataRequest();
   }, []);
 
   useEffect(() => {
-    makeScheduledAppointmentsRequest();
+    makePatientDataRequest();
+  }, [doctor]);
+
+  useEffect(() => {
+    makeAppointmentsDataRequest();
   }, [patient]);
 
   return (
     <section className="w-full flex flex-col items-center ">
       <p className="text-textColor font-medium my-2 w-full text-center md:text-lg md:my-4 lg:text-xl lg:my-6">
-        Welcome to Patient Dashboard
+        Patient Profile
       </p>
 
-      {isLoading ? (
+      {doctorLoading || patientLaoding ? (
         <Loader />
       ) : (
         <div className="w-full p-2 sm:w-[90%] md:w-[85%] lg:w-[80%] xl:w-[75%]">
           <div className="flex flex-col px-2 text-xs sm:text-sm md:text-base">
             <div className="py-2">
               <p className="w-full text-left border-b border-designColor2 text-textColor font-semibold my-2">
-                Personal details:{" "}
+                Patient details:{" "}
               </p>
 
               <h2>
@@ -99,22 +123,22 @@ export default function Home() {
 
             <div className="py-2 md:py-4">
               <p className="w-full text-left border-b border-designColor2 text-textColor font-semibold my-2">
-                Scheduled Appointments:{" "}
+                Appointments History:{" "}
               </p>
               <div>
-                {scheduledAppointmentsLoading ? (
+                {appointmentsLoading ? (
                   <Loader />
-                ) : scheduledAppointments.length == 0 ? (
-                  "no Schduled appointments"
+                ) : appointments.length == 0 ? (
+                  "no appointments"
                 ) : (
                   <AppointmentTable
-                  tableTitle={"Notifications"}
-                  itemsRange={itemsRange}
-                  itemsToShowAtATime={itemsToShowAtATime}
-                  appointments={scheduledAppointments}
-                  totalItems={totalItems}
-                  setItemsRange={setItemsRange}
-                  viewRole="patient"
+                    tableTitle={"Notifications"}
+                    itemsRange={itemsRange}
+                    itemsToShowAtATime={itemsToShowAtATime}
+                    appointments={appointments}
+                    totalItems={totalItems}
+                    setItemsRange={setItemsRange}
+                    viewRole="doctor"
                   />
                 )}
               </div>

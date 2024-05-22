@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import { SamplePatients } from "../../../sampleData/samplePatients";
-import Loader from "../../../Components/loader";
+import { useState, useEffect } from "react";
+import { SampleDoctors } from "../../../sampleData/sampleDoctors";
 import { SampleAppintments } from "../../../sampleData/sampleAppointments";
+import Loader from "../../../Components/loader";
 import AppointmentTable from "../../../Components/appointmentsTable";
 
+const sampleDoctor = SampleDoctors[0];
 const itemsToShowAtATime = 5;
-const samplePatient = SamplePatients[0]
 
 export default function Home() {
-  const [patient, setPatient] = useState({});
+  const [doctor, setDoctor] = useState({});
   const [scheduledAppointments, setScheduledAppointmnts] = useState([]);
   const [scheduledAppointmentsLoading, setScheduledAppointmentsLoading] =
     useState(true);
@@ -19,21 +19,21 @@ export default function Home() {
   });
   const [totalItems, setTotalItems] = useState(0);
 
-  const makePatientDataRequest = () => {
+  const makeDataRequest = async () => {
     setIsLoading(true);
     setTimeout(() => {
-      setPatient(samplePatient);
+      setDoctor(sampleDoctor);
       setIsLoading(false);
     }, 500);
   };
 
   const makeScheduledAppointmentsRequest = async () => {
     setScheduledAppointmentsLoading(true);
+    console.log("Doctor id: ", doctor.id);
     setTimeout(() => {
       const tempAppointments = SampleAppintments.filter(
-        (appointmentItem) =>
-          appointmentItem.status == "scheduled" &&
-          appointmentItem.patientId == patient.id
+        (appointment) =>
+          appointment.status == "scheduled" && appointment.doctorId == doctor.id
       );
       setScheduledAppointmnts(
         tempAppointments.slice(itemsRange.start, itemsRange.end + 1)
@@ -44,17 +44,17 @@ export default function Home() {
   };
 
   useEffect(() => {
-    makePatientDataRequest();
+    makeDataRequest();
   }, []);
 
   useEffect(() => {
     makeScheduledAppointmentsRequest();
-  }, [patient]);
+  }, [doctor]);
 
   return (
     <section className="w-full flex flex-col items-center ">
       <p className="text-textColor font-medium my-2 w-full text-center md:text-lg md:my-4 lg:text-xl lg:my-6">
-        Welcome to Patient Dashboard
+        Welcome to Doctor Dashboard
       </p>
 
       {isLoading ? (
@@ -68,32 +68,19 @@ export default function Home() {
               </p>
 
               <h2>
-                Name: <span className="font-semibold">{patient.name}</span>
+                Name: <span className="font-semibold">{doctor.name}</span>
               </h2>
               <h2>
-                Email: <span className="font-semibold">{patient.email}</span>
+                Email: <span className="font-semibold">{doctor.email}</span>
               </h2>
               <h2>
                 Gender:{" "}
                 <span className="font-semibold capitalize">
-                  {patient.gender}
+                  {doctor.gender}
                 </span>
               </h2>
               <h2>
-                Age: <span className="font-semibold">{patient.age}</span>
-              </h2>
-              <h2 className="my-1">
-                {" "}
-                Status:
-                <span
-                  className={`${
-                    patient.currentlyAdmitted
-                      ? "bg-green-700 text-white"
-                      : "bg-designColor1 text-black"
-                  } w-min mx-1 px-1 rounded text-xs`}
-                >
-                  {patient.currentlyAdmitted ? "Admitted" : "Discharged"}
-                </span>
+                Age: <span className="font-semibold">{doctor.age}</span>
               </h2>
             </div>
 
@@ -108,13 +95,13 @@ export default function Home() {
                   "no Schduled appointments"
                 ) : (
                   <AppointmentTable
-                  tableTitle={"Notifications"}
-                  itemsRange={itemsRange}
-                  itemsToShowAtATime={itemsToShowAtATime}
-                  appointments={scheduledAppointments}
-                  totalItems={totalItems}
-                  setItemsRange={setItemsRange}
-                  viewRole="patient"
+                    tableTitle={"Notifications"}
+                    itemsRange={itemsRange}
+                    itemsToShowAtATime={itemsToShowAtATime}
+                    appointments={scheduledAppointments}
+                    totalItems={totalItems}
+                    setItemsRange={setItemsRange}
+                    viewRole="doctor"
                   />
                 )}
               </div>

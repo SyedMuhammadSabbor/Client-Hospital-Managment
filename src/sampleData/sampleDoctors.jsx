@@ -1,7 +1,10 @@
 export const SampleDoctors = [
   {
-    id: 1,
+    id: 0,
     name: "Ahmad",
+    email: "sample@example.com",
+    gender: "male",
+    age: 45,
     field: "Dentitst",
     qualification: "MBBS",
     maxAppointments: 5,

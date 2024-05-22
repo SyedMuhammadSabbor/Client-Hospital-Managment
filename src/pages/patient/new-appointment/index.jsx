@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
-import { SampleUser } from "../sampleData/sampleUser";
+import { SamplePatients } from "../../../sampleData/samplePatients";
 import Loader from "../../../Components/loader";
 import FormInput from "../../../Components/formInput";
-import { SampleDoctors } from "../sampleData/sampleDoctors";
-import { SampleAppintments } from "../sampleData/sampleAppointments";
+import { SampleDoctors } from "../../../sampleData/sampleDoctors";
+import { SampleAppintments } from "../../../sampleData/sampleAppointments";
 import Button from "../../../Components/button";
-import { SampleNotifications } from "../sampleData/sampleNotification";
+import { SampleNotifications } from "../../../sampleData/sampleNotification";
 import { useNavigate } from "react-router-dom";
+
+const sampleUser = SamplePatients[0];
 
 export default function NewAppointment() {
   const [userDetails, setUserDetails] = useState({});
   const [newAppointmentDetails, setNewAppointmentDetails] = useState({
-    doctor: 0,
-    patient: 0,
+    doctorId: 0,
+    patientId: 0,
     doctorName: "",
     doctorField: "",
     patientName: "",
@@ -35,11 +37,11 @@ export default function NewAppointment() {
   const makeDataRequest = () => {
     setIsLaoding(true);
     setTimeout(() => {
-      setUserDetails(SampleUser);
+      setUserDetails(sampleUser);
       setNewAppointmentDetails((prev) => ({
         ...prev,
-        patientName: SampleUser.name,
-        patient: SampleUser.id,
+        patientName: sampleUser.name,
+        patientId: sampleUser.id,
       }));
       setIsLaoding(false);
     }, 1000);
@@ -99,7 +101,7 @@ export default function NewAppointment() {
     setNewAppointmentDetails((prev) => ({
       ...prev,
       doctorName: doctorNameAndId.name,
-      doctor: doctorId,
+      doctorId: doctorId,
     }));
     makeDoctorDataRequest(doctorId);
   };
@@ -164,7 +166,7 @@ export default function NewAppointment() {
     });
 
     // navigate to home page
-    navigate("/patient")
+    navigate("/patient/appointments")
   };
 
   return (

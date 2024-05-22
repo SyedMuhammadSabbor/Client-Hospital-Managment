@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import { SampleAppintments } from "../sampleData/sampleAppointments";
-import Loader from "../../../Components/loader";
-import Button from "../../../Components/button";
+import Loader from "./loader";
+import Button from "./button";
 import { useNavigate, useParams } from "react-router-dom";
-import NotFound from "../not-found";
+import PateintNotFoundPage from "../pages/patient/not-found";
+import NotFound from "../pages/not-found";
+import { SampleDoctors } from "../sampleData/sampleDoctors";
+import DoctorNotFoundPage from "../pages/doctor/not-found";
 
-export default function AppointmentView() {
+export default function AppointmentView({ viewRole = "patient" }) {
   const params = useParams();
   const { appointmentId } = params;
 
   const [appointmentDetails, setAppointmentDetails] = useState({});
-  const [appointmentDetailsFound, setAppointmentDetailsFound] = useState(false);
+  const [appointmentDetailsFound, setAppointmentDetailsFound] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
@@ -37,10 +40,55 @@ export default function AppointmentView() {
     navigate(-1);
   };
 
+  const handleDeleteAppointment = () => {
+    // get appointment data
+    const tempAppointment = SampleAppintments.find(
+      (appointmentItem) => appointmentItem.id == appointmentId
+    );
+
+    // update doctor time table
+    const tempDoctor = SampleDoctors.find(
+      (doctorItem) => doctorItem.id == tempAppointment.doctorId
+    );
+    const tempDoctorIndex = SampleDoctors.findIndex(
+      (doctorItem) => doctorItem == tempDoctor
+    );
+    tempDoctor.currentAppointments--;
+    tempDoctor.appointedHours = tempDoctor.appointedHours.filter(
+      (hourItem) =>
+        hourItem !=
+        tempAppointment.hoursTime - tempDoctor.appointmentHours.start
+    );
+    SampleDoctors[tempDoctorIndex] = tempDoctor;
+    console.log("Temp Doctor: ", tempDoctor);
+
+    // update appointment data
+    const tempAppointmentIndex = SampleAppintments.findIndex(
+      (appointmentItem) => appointmentItem == tempAppointment
+    );
+    tempAppointment.status = "deleted";
+    tempAppointment.hoursTime = 0;
+    SampleAppintments[tempAppointmentIndex] = tempAppointment;
+    console.log("Temp appointment: ", tempAppointment);
+
+    navigate("/doctor/appointments");
+  };
+
   useEffect(() => {
     setIsLoading(true);
     makeDataRequest();
   }, [appointmentId]);
+
+  if (!appointmentDetailsFound) {
+    switch (viewRole) {
+      case "patient":
+        return <PateintNotFoundPage />;
+      case "doctor":
+        return <DoctorNotFoundPage />
+      default:
+        return <NotFound />;
+    }
+  }
 
   //   First we will check whather the page is loading
   //  2nd Wheather the doctor has been found
@@ -49,8 +97,6 @@ export default function AppointmentView() {
     <section className="w-full flex flex-col items-center">
       {isLoading ? (
         <Loader />
-      ) : !appointmentDetailsFound ? (
-        <NotFound />
       ) : (
         <div className="w-full p-2 sm:w-[90%] md:w-[85%] lg:w-[80%] xl:w-[75%]">
           <div className="w-full text-center bg-primary py-4">
@@ -94,6 +140,8 @@ export default function AppointmentView() {
                     ? "bg-green-700 text-white"
                     : appointmentDetails.status == "pending"
                     ? "bg-designColor2 text-white"
+                    : appointmentDetails.status == "deleted"
+                    ? "bg-red-700 text-white"
                     : "bg-designColor1 text-black"
                 } w-min mx-1 px-1 rounded capitalize`}
               >
@@ -126,8 +174,16 @@ export default function AppointmentView() {
             </div>
           </div>
 
-          <div className="w-full text-left mt-2 lg:mt-4">
+          <div className="w-full flex justify-between text-left mt-2 lg:mt-4">
             <Button text={"back"} handleOnClick={handleGoBack} />
+            {viewRole == "doctor" &&
+              appointmentDetails.status !== "deleted" && appointmentDetails.status !== "completed" && (
+                <Button
+                  text={"delete"}
+                  variant="danger"
+                  handleOnClick={handleDeleteAppointment}
+                />
+              )}
           </div>
         </div>
       )}

@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import USER_PROFILE from "/user-regular.png";
 import { SampleDoctors } from "../sampleData/sampleDoctors";
-import Loader from "../../../Components/loader";
-import Button from "../../../Components/button";
+import Loader from "./loader";
+import Button from "./button";
 import { useNavigate, useParams } from "react-router-dom";
-import NotFound from "../not-found";
+import PateintNotFoundPage from "../pages/patient/not-found";
+import NotFound from "../pages/not-found";
 
-export default function DoctorView() {
+export default function DoctorView({ viewRole = "patient" }) {
   const params = useParams();
   const { doctorId } = params;
-
   const [doctorDetails, setDoctorDetails] = useState({});
-  const [doctorDetailsFound, setDoctorDetailsFound] = useState(false);
+  const [doctorDetailsFound, setDoctorDetailsFound] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
@@ -43,15 +43,18 @@ export default function DoctorView() {
     makeDataRequest();
   }, [doctorId]);
 
-  //   First we will check whather the page is loading
-  //  2nd Wheather the doctor has been found
-  // if both condtions satified then we will render main content
+  if (!doctorDetailsFound) {
+    switch (viewRole) {
+      case "patient":
+        return <PateintNotFoundPage />;
+      default:
+        <NotFound />;
+    }
+  }
   return (
     <section className="w-full flex flex-col items-center">
       {isLoading ? (
         <Loader />
-      ) : !doctorDetailsFound ? (
-        <NotFound />
       ) : (
         <div className="w-full p-2 sm:w-[90%] md:w-[85%] lg:w-[80%] xl:w-[75%]">
           <div className="w-full text-center bg-primary py-4">

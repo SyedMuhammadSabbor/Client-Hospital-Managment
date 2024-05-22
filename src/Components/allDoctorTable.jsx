@@ -1,69 +1,42 @@
 import { useEffect, useState } from "react";
-import Button from "../../../Components/button";
-import Loader from "../../../Components/loader";
-import { SampleNotifications } from "../sampleData/sampleNotification";
+import Button from "./button";
+import Loader from "./loader";
+import { SampleDoctors } from "../sampleData/sampleDoctors";
 import { useNavigate } from "react-router-dom";
+import { prevClick } from "./utils/prevClick";
+import { nextClick } from "./utils/nextClick";
 
-const totalItems = SampleNotifications.length;
-const itemsToShowAtATime = totalItems < 5 ? totalItems : 5;
+const totalItems = SampleDoctors.length;
+const itemsToShowAtATime = totalItems < 5 ? totalItems : 5; // max 5 items to show at a time
 
-export default function NotificationTable({ tableTitle }) {
-  const [notifications, setNotifications] = useState([]);
+export default function DoctorTable() {
+  const [doctorsData, setDoctorsData] = useState([]);
   const [itemsRange, setItemsRange] = useState({
     start: 0,
-    end: itemsToShowAtATime - 1,
+    end: itemsToShowAtATime - 1, // 0-4 => 5 items
   });
   const [isLoading, setIsLoading] = useState(true);
-
-  const navigate = useNavigate();
+  const naviagte = useNavigate();
 
   const handlePrevClick = () => {
-    if (itemsRange.start - itemsToShowAtATime >= 0) {
-      if (itemsRange.start - itemsRange.end == 0) {
-        // == 0
-        setItemsRange((prev) => ({
-          start: prev.start - itemsToShowAtATime,
-          end: prev.end - 1,
-        }));
-      } else if (itemsRange.end - itemsRange.start > 0) {
-        // >0
-        setItemsRange((prev) => ({
-          start: prev.start - itemsToShowAtATime,
-          end: prev.start - 1,
-        }));
-      }
-    }
+    prevClick(itemsRange, itemsToShowAtATime, setItemsRange);
   };
 
   const handleNextClick = () => {
-    if (itemsRange.end + itemsToShowAtATime <= totalItems) {
-      // minimum items
-      setItemsRange((prev) => ({
-        start: prev.start + itemsToShowAtATime,
-        end: prev.end + itemsToShowAtATime,
-      }));
-    } else if (itemsRange.end < totalItems) {
-      // we have less items than minimum
-      setItemsRange((prev) => ({
-        start: prev.end + 1,
-        end: totalItems - 1, // total items is index based
-      }));
-    }
+    nextClick(itemsRange, itemsToShowAtATime, setItemsRange);
   };
 
   const sampleDataRequest = async () => {
     console.log(itemsRange);
     setIsLoading(true);
     setTimeout(() => {
-      setNotifications(
-        SampleNotifications.slice(itemsRange.start, itemsRange.end + 1)
-      ); // end point is exclusive
+      setDoctorsData(SampleDoctors.slice(itemsRange.start, itemsRange.end + 1)); // end point is exclusive
       setIsLoading(false);
-    }, 2000);
+    }, 500);
   };
 
-  const handleNotificationView = (notificationId) => {
-    navigate(`/patient/notifications/${notificationId}`);
+  const handleDoctorProfileView = (doctorId) => {
+    naviagte(`/patient/doctors/${doctorId}`);
   };
 
   useEffect(() => {
@@ -77,47 +50,34 @@ export default function NotificationTable({ tableTitle }) {
       ) : (
         <>
           {" "}
-          <p className="w-[90%] text-left text-textColor text-sm md:font-semibold md:text-base">
-            {tableTitle}
-          </p>
           <table className="w-[90%] border-collapse divide-y divide-designColor2 text-sm md:text-base">
             <thead>
               <tr className=" bg-designColor1 text-white">
                 <th className="px-2 py-1 md:px-4 md:py-2 text-left">#</th>
                 <th className="px-2 py-1 md:px-4 md:py-2 text-center">
-                  Notification
+                  Doctor
                 </th>
-                <th className="px-2 py-1 md:px-4 md:py-2 text-center">Dated</th>
+                <th className="px-2 py-1 md:px-4 md:py-2 text-center">Field</th>
                 <th className="px-2 py-1 md:px-4 md:py-2 text-right">Action</th>
               </tr>
             </thead>
             <tbody>
-              {notifications.map((notification, index) => {
-                const tempDate = new Date(notification.dated);
-                const formattedDate = tempDate.toLocaleDateString("en-US", {
-                  year: "2-digit",
-                  month: "short",
-                  day: "2-digit",
-                });
-
+              {doctorsData.map((doctor, index) => {
                 return (
                   <tr key={index} className="text-gray-700 hover:bg-gray-100">
                     <td className="px-2 py-1 md:px-4 md:py-2">
                       {itemsRange.start + index + 1}
                     </td>
                     <td className="px-2 py-1 md:px-4 md:py-2 text-center">
-                      {notification.name}
+                      {doctor.name}
                     </td>
                     <td className="px-2 py-1 md:px-4 md:py-2 text-center">
-                      {formattedDate}
+                      {doctor.field}
                     </td>
                     <td className="px-2 py-1 md:px-4 md:py-2 text-right">
                       <Button
-                        text={notification.viewed ? "view" : "new"}
-                        variant={notification.viewed ? "secondry" : "primary"}
-                        handleOnClick={() =>
-                          handleNotificationView(notification.id)
-                        }
+                        text={"profile"}
+                        handleOnClick={() => handleDoctorProfileView(doctor.id)}
                       />
                     </td>
                   </tr>

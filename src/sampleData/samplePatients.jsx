@@ -1,0 +1,78 @@
+export const SamplePatients = [
+  {
+    id: 0,
+    name: "Ahmad",
+    email: "sample@exmaple.com",
+    gender: "male",
+    age: 20,
+    phone: "1234567890",
+    currentlyAdmitted: true,
+    doctorIds: [0, 1, 2, 3, 4, 5],
+    appointmentIds: [0, 1, 2, 3, 4, 5],
+    bill: 0,
+
+    address: {
+      strret: "1",
+      plot: "45p",
+      colonoy: "sample town",
+      city: "Faisalbad",
+    },
+  },
+  {
+    id: 1,
+    name: "Ahmad",
+    email: "sample@exmaple.com",
+    gender: "male",
+    age: 20,
+    phone: "1234567890",
+    currentlyAdmitted: true,
+    doctorIds: [1, 2, 3, 4, 5],
+    appointmentIds: [0, 1, 2, 3, 4, 5],
+    bill: 0,
+
+    address: {
+      strret: "1",
+      plot: "45p",
+      colonoy: "sample town",
+      city: "Faisalbad",
+    },
+  },
+  {
+    id: 2,
+    name: "Hamid",
+    email: "sample@exmaple.com",
+    gender: "male",
+    age: 20,
+    phone: "1234567890",
+    currentlyAdmitted: true,
+    doctorIds: [0, 1, 5],
+    appointmentIds: [5],
+    bill: 0,
+
+    address: {
+      strret: "1",
+      plot: "45p",
+      colonoy: "sample town",
+      city: "Faisalbad",
+    },
+  },
+  {
+    id: 3,
+    name: "Ahmad",
+    email: "sample@exmaple.com",
+    gender: "male",
+    age: 20,
+    phone: "1234567890",
+    currentlyAdmitted: true,
+    doctorIds: [0, 1, 2, 3, 4, 5],
+    appointmentIds: [0, 1, 2, 3, 4, 5],
+    bill: 0,
+
+    address: {
+      strret: "1",
+      plot: "45p",
+      colonoy: "sample town",
+      city: "Faisalbad",
+    },
+  },
+];

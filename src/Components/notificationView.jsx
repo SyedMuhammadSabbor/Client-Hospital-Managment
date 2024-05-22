@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
-import Button from "../../../Components/button";
-import Loader from "../../../Components/loader";
-import { SampleNotifications } from "../sampleData/sampleNotification";
 import { useNavigate, useParams } from "react-router-dom";
-import NotFound from "../not-found";
+import Button from "./button";
+import Loader from "./loader";
+import { SampleNotifications } from "../sampleData/sampleNotification";
+import NotFound from "../pages/not-found";
+import PateintNotFoundPage from "../pages/patient/not-found";
 
-export default function NotificationView() {
+export default function NotificationView({ viewRole = "patient" }) {
   const params = useParams();
   const { notificationId } = params;
 
   const [notificationDetails, setNotificationDetails] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [notificationFound, setNotificationFound] = useState(false);
+  const [notificationFound, setNotificationFound] = useState(true);
 
   const navigate = useNavigate();
 
@@ -45,12 +46,19 @@ export default function NotificationView() {
     makeDataRequest();
   }, [notificationId]);
 
+  if (!notificationFound) {
+    switch (viewRole) {
+      case "patient":
+        return <PateintNotFoundPage />;
+      default:
+        return <NotFound />;
+    }
+  }
+
   return (
     <section className="w-full flex flex-col items-center">
       {isLoading ? (
         <Loader />
-      ) : !notificationFound ? (
-        <NotFound />
       ) : (
         <div className="w-full min-h-screen flex flex-col justify-between p-8 sm:w-[90%] md:w-[85%] lg:w-[80%] xl:w-[75%]">
           <div className="w-full text-center bg-primary py-4">

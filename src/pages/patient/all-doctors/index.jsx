@@ -1,4 +1,4 @@
-import DoctorTable from "../Components/doctorTable";
+import DoctorTable from "../../../Components/allDoctorTable";
 
 export default function AllDoctors() {
   return (
@@ -8,7 +8,7 @@ export default function AllDoctors() {
       </p>
 
       <div className="px-2 ">
-        <DoctorTable />
+        <DoctorTable/>
       </div>
     </section>
   );
