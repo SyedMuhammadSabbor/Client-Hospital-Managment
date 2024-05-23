@@ -60,8 +60,6 @@ export default function DoctorTable({
     }
   };
 
-  console.log("Doctors: ", doctors);
-
   return (
     <section className="w-full flex flex-col items-center">
       <table className="w-[90%] border-collapse divide-y divide-designColor2 text-sm md:text-base">

@@ -5,16 +5,18 @@ import Loader from "./loader";
 import AppointmentTable from "./appointmentsTable";
 import { useParams } from "react-router-dom";
 import { SampleDoctors } from "../sampleData/sampleDoctors";
+import NotFoundPage from "../pages/not-found";
 
 const itemsToShowAtATime = 5;
 const sampleDoctor = SampleDoctors[0];
 
-export default function PatientView({viewRole = "doctor"}) {
+export default function PatientView({ viewRole = "doctor" }) {
   const [doctor, setDoctor] = useState({});
   const [doctorLoading, setDoctorLoading] = useState(true);
 
   const [patient, setPatient] = useState({});
   const [patientLaoding, setPatientLoading] = useState(true);
+  const [patientFound, setPatientFound] = useState(true);
 
   const [appointments, setAppointments] = useState([]);
   const [appointmentsLoading, setAppointmentsLoading] = useState(true);
@@ -34,19 +36,26 @@ export default function PatientView({viewRole = "doctor"}) {
       setDoctorLoading(false);
     }, 500);
   };
+
   const makePatientDataRequest = () => {
-    setPatientLoading(true);
     setTimeout(() => {
+      setPatientLoading(true);
+      setPatientFound(false);
       const tempPatient = SamplePatients.find(
         (patientItem) => patientItem.id == patientId
       );
+      if (!tempPatient) {
+        setPatientFound(false);
+        setPatientLoading(false);
+        return;
+      }
       setPatient(tempPatient);
       setPatientLoading(false);
+      setPatientFound(true);
     }, 500);
   };
 
   const makeAppointmentsDataRequest = async () => {
-    console.log("ok");
     setPatientLoading(true);
     setTimeout(() => {
       const patientAppointmentIds = patient.appointmentIds;
@@ -75,6 +84,19 @@ export default function PatientView({viewRole = "doctor"}) {
     makeAppointmentsDataRequest();
   }, [patient]);
 
+  if (!patientFound) {
+    switch (viewRole) {
+      case "patient":
+        return <NotFoundPage redirectTo="/patient" />;
+      case "doctor":
+        return <NotFoundPage redirectTo="/doctor" />;
+      case "admin":
+        return <NotFoundPage redirectTo="/admin" />;
+      default:
+        <NotFoundPage redirectTo="/" />;
+    }
+  }
+
   return (
     <section className="w-full flex flex-col items-center ">
       <p className="text-textColor font-medium my-2 w-full text-center md:text-lg md:my-4 lg:text-xl lg:my-6">
@@ -91,34 +113,29 @@ export default function PatientView({viewRole = "doctor"}) {
                 Patient details:{" "}
               </p>
 
-              <h2>
-                Name: <span className="font-semibold">{patient.name}</span>
-              </h2>
-              <h2>
-                Email: <span className="font-semibold">{patient.email}</span>
-              </h2>
-              <h2>
-                Gender:{" "}
-                <span className="font-semibold capitalize">
-                  {patient.gender}
-                </span>
-              </h2>
-              <h2>
-                Age: <span className="font-semibold">{patient.age}</span>
-              </h2>
-              <h2 className="my-1">
-                {" "}
-                Status:
-                <span
-                  className={`${
-                    patient.currentlyAdmitted
-                      ? "bg-green-700 text-white"
-                      : "bg-designColor1 text-black"
-                  } w-min mx-1 px-1 rounded text-xs`}
-                >
-                  {patient.currentlyAdmitted ? "Admitted" : "Discharged"}
-                </span>
-              </h2>
+              {patientLaoding ? (
+                <Loader />
+              ) : (
+                <>
+                  {" "}
+                  <h2>
+                    Name: <span className="font-semibold">{patient.name}</span>
+                  </h2>
+                  <h2>
+                    Email:{" "}
+                    <span className="font-semibold">{patient.email}</span>
+                  </h2>
+                  <h2>
+                    Gender:{" "}
+                    <span className="font-semibold capitalize">
+                      {patient.gender}
+                    </span>
+                  </h2>
+                  <h2>
+                    Age: <span className="font-semibold">{patient.age}</span>
+                  </h2>
+                </>
+              )}
             </div>
 
             <div className="py-2 md:py-4">

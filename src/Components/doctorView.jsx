@@ -4,8 +4,8 @@ import { SampleDoctors } from "../sampleData/sampleDoctors";
 import Loader from "./loader";
 import Button from "./button";
 import { useNavigate, useParams } from "react-router-dom";
-import PateintNotFoundPage from "../pages/patient/not-found";
-import NotFound from "../pages/not-found";
+import NotFoundPage from "../pages/not-found";
+import { sendNotification } from "./utils/sendNotification";
 
 export default function DoctorView({ viewRole = "patient" }) {
   const params = useParams();
@@ -41,11 +41,21 @@ export default function DoctorView({ viewRole = "patient" }) {
     const tempDoctorIndex = SampleDoctors.findIndex(
       (doctorItem) => doctorItem.id == doctorDetails.id
     );
-    tempDoctor.status = "pending";
+    tempDoctor.status = "approved";
     SampleDoctors[tempDoctorIndex] = tempDoctor;
 
-    // send notification
-    
+    // send notification of approval
+    const message =
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+    sendNotification(
+      0, // admin by default
+      tempDoctor.id,
+      viewRole,
+      "approval of doctor",
+      message
+    );
+
+    navigate(-1)
   };
 
   const handleGoBack = () => {
@@ -60,9 +70,11 @@ export default function DoctorView({ viewRole = "patient" }) {
   if (!doctorDetailsFound) {
     switch (viewRole) {
       case "patient":
-        return <PateintNotFoundPage />;
+        return <NotFoundPage redirectTo="/patient" />;
+      case "admin":
+        return <NotFoundPage redirectTo="/admin" />;
       default:
-        <NotFound />;
+        <NotFoundPage redirectTo="/" />;
     }
   }
   return (
@@ -91,7 +103,12 @@ export default function DoctorView({ viewRole = "patient" }) {
                   {doctorDetails.qualification}
                 </span>
               </h2>
-              {doctorDetails.status == "pending" && <Button text={"approve"} />}
+              {doctorDetails.status == "pending" && (
+                <Button
+                  text={"approve"}
+                  handleOnClick={() => handleApproveDoctor(doctorDetails.id)}
+                />
+              )}
             </div>
             <div className="flex-[25%] flex items-center justify-center">
               <img

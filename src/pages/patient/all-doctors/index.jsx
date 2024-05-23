@@ -42,7 +42,7 @@ export default function AllDoctors() {
 
   useEffect(() => {
     makePatientDataRequest();
-  });
+  }, []);
 
   useEffect(() => {
     makeApprovedDoctorsDataRequest();

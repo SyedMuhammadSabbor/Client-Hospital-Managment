@@ -9,6 +9,7 @@ import NotFound from "./pages/not-found";
 import Doctor from "./pages/doctor";
 import Admin from "./pages/admin";
 import DevNavigationMenu from "./Components/devNavigationMenu";
+import ProtectedRoute from "./Components/protectedRoute";
 
 function App() {
   return (
@@ -25,7 +26,12 @@ function App() {
 
         {/* for child routing */}
         {/* Child routes are present in parent root file i.e index.jsx */}
-        <Route path="/patient/*" element={<Patient />} />
+
+        <Route
+          path="/patient/*"
+          element={<ProtectedRoute component={Patient} />}
+        />
+
         <Route path="/doctor/*" element={<Doctor />} />
         <Route path="/admin/*" element={<Admin />} />
 

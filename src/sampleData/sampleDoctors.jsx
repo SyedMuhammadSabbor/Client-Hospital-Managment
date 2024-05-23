@@ -4,7 +4,7 @@ export const SampleDoctors = [
     name: "Hamid",
     email: "sample@example.com",
     gender: "male",
-    status: "approved",
+    status: "pending",
     age: 45,
     field: "Dentitst",
     qualification: "MBBS",
