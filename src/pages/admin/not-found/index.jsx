@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../../../Components/button";
 
-export default function PateintNotFoundPage() {
+export default function AdminNotFoundPage() {
   const navigate = useNavigate();
   const hanldeClick = () => {
-    navigate("/patient", {replace: true});
+    navigate("/admin", { replace: true });
   };
   return (
     <section className="w-full h-screen flex flex-col items-center justify-center space-y-2">

@@ -23,7 +23,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="flex-[50%] h-full">
+      <div className="hidden md:block md:flex-[50%] nd:h-full">
         <img src={LOGO} alt="logo" className="h-full w-full"/>
       </div>
     </main>

@@ -1,18 +1,26 @@
 import { useEffect, useState } from "react";
-import { SampleUser } from "../sampleData/sampleUser";
+import { SamplePatients } from "../../../sampleData/samplePatients";
 import Loader from "../../../Components/loader";
 import FormInput from "../../../Components/formInput";
-import { SampleDoctors } from "../sampleData/sampleDoctors";
-import { SampleAppintments } from "../sampleData/sampleAppointments";
+import { SampleDoctors } from "../../../sampleData/sampleDoctors";
+import { SampleAppintments } from "../../../sampleData/sampleAppointments";
 import Button from "../../../Components/button";
-import { SampleNotifications } from "../sampleData/sampleNotification";
 import { useNavigate } from "react-router-dom";
+import { sendNotification } from "../../../Components/utils/sendNotification";
 
-export default function NewAppointment() {
+const sampleUser = SamplePatients[0];
+const minDate = new Date(new Date().getTime() + 1 * 24 * 60 * 60 * 1000)
+  .toISOString()
+  .slice(0, 10); // Tomorrows's date in YYYY-MM-DD format
+const maxDate = new Date(new Date().getTime() + 8 * 24 * 60 * 60 * 1000)
+  .toISOString()
+  .slice(0, 10); // 7 days from tomorrow
+
+export default function NewAppointment({ viewRole = "patient" }) {
   const [userDetails, setUserDetails] = useState({});
   const [newAppointmentDetails, setNewAppointmentDetails] = useState({
-    doctor: 0,
-    patient: 0,
+    doctorId: 0,
+    patientId: 0,
     doctorName: "",
     doctorField: "",
     patientName: "",
@@ -35,11 +43,11 @@ export default function NewAppointment() {
   const makeDataRequest = () => {
     setIsLaoding(true);
     setTimeout(() => {
-      setUserDetails(SampleUser);
+      setUserDetails(sampleUser);
       setNewAppointmentDetails((prev) => ({
         ...prev,
-        patientName: SampleUser.name,
-        patient: SampleUser.id,
+        patientName: sampleUser.name,
+        patientId: sampleUser.id,
       }));
       setIsLaoding(false);
     }, 1000);
@@ -99,7 +107,7 @@ export default function NewAppointment() {
     setNewAppointmentDetails((prev) => ({
       ...prev,
       doctorName: doctorNameAndId.name,
-      doctor: doctorId,
+      doctorId: doctorId,
     }));
     makeDoctorDataRequest(doctorId);
   };
@@ -119,7 +127,6 @@ export default function NewAppointment() {
     // const tempData = {...selectedDoctor};
     // tempData.currentAppointments++;
     // tempData.appointedHours.push(choosenHour - tempData.appointmentHours.start);
-    console.log("Hello: ", tempAppointedHours);
   };
 
   const handlePreMessageChange = (e) => {
@@ -132,9 +139,13 @@ export default function NewAppointment() {
     }));
   };
 
+  const handleAppointmentDateChange = (e) => {
+    const tempDate = new Date(e.target.value).getTime();
+    setNewAppointmentDetails((prev) => ({ ...prev, dated: tempDate }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Appointment details: ", newAppointmentDetails);
 
     // update doctor time table
     selectedDoctor.currentAppointments++;
@@ -153,18 +164,28 @@ export default function NewAppointment() {
     });
 
     // update user notification
-    SampleNotifications.unshift({
-      id: SampleNotifications.length,
-      name: "Appointment letter",
-      dated: 1716184560522,
-      viewed: true,
-      from: "Admin",
-      message:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    });
+    console.log("doctor id: ", newAppointmentDetails.doctorId)
+    const message =
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+    sendNotification(
+      userDetails.id,
+      newAppointmentDetails.doctorId,
+      userDetails.name,
+      "new appointment",
+      message
+    );
 
     // navigate to home page
-    navigate("/patient")
+    switch (viewRole) {
+      case "patient":
+        navigate("/patient/appointments");
+        break;
+      case "admin":
+        navigate("/patient/appointments");
+        break;
+      default:
+        navigate("/");
+    }
   };
 
   return (
@@ -284,6 +305,22 @@ export default function NewAppointment() {
                   </select>
                 )}
               </label>
+
+              {/*  */}
+              <label>
+                <span className="text-sm text-textColor">Date </span>
+                <input
+                  type="date"
+                  name="dated"
+                  id="dated"
+                  min={minDate}
+                  max={maxDate}
+                  onChange={handleAppointmentDateChange}
+                  required
+                  className="w-full bg-white  text-textColor my-1 p-1 border-designColor2 border rounded focus:outline-none focus:border-textColor"
+                />
+              </label>
+              {/*  */}
 
               <label htmlFor="pre-details">
                 <p className="text-sm text-textColor">

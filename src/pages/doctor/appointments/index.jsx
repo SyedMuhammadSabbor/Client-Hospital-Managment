@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import AppointmentTable from "../../../Components/appointmentsTable";
-import CustomLink from "../../../Components/link";
 import { SampleAppintments } from "../../../sampleData/sampleAppointments";
-import { SamplePatients } from "../../../sampleData/samplePatients";
+import { SampleDoctors } from "../../../sampleData/sampleDoctors";
 import Loader from "../../../Components/loader";
 
 const itemsToShowAtATime = 5;
-const sampleUser = SamplePatients[0];
 
+const sampleDoctor = SampleDoctors[0];
 export default function Appointments() {
-  const [pateint, setPatient] = useState({});
-  const [appointments, setAppoinments] = useState([]);
+  const [doctor, setDoctor] = useState({});
+  const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [itemsRange, setItemsRange] = useState({
     start: 0,
@@ -18,19 +17,19 @@ export default function Appointments() {
   });
   const [totalItems, setTotalItems] = useState(0);
 
-  const makePatientDataRequest = () => {
+  const makeDoctorDataRequest = () => {
     setTimeout(() => {
-      setPatient(sampleUser);
+      setDoctor(sampleDoctor);
     }, 500);
   };
 
-  const makePateintAppointmentRequest = () => {
+  const makeAppointmentsDataRequest = () => {
     setIsLoading(true);
     setTimeout(() => {
       const tempAppointments = SampleAppintments.filter(
-        (appointmentItem) => appointmentItem.patientId == pateint.id
+        (appointmentItem) => appointmentItem.doctorId == doctor.id
       );
-      setAppoinments(
+      setAppointments(
         tempAppointments.slice(itemsRange.start, itemsRange.end + 1)
       );
       setTotalItems(tempAppointments.length); // for now
@@ -39,38 +38,36 @@ export default function Appointments() {
   };
 
   useEffect(() => {
-    makePatientDataRequest();
-  });
+    makeDoctorDataRequest();
+  }, []);
 
   useEffect(() => {
-    makePateintAppointmentRequest();
-  }, [pateint, itemsRange]);
+    makeAppointmentsDataRequest();
+  }, [doctor]);
+
   return (
     <section className="w-full flex flex-col ">
       <div className="w-full flex justify-center space-x-1 my-2  md:my-4 lg:my-6">
         <p className="text-textColor font-medium  md:text-lg lg:text-xl ">
           Appointment(s)
         </p>
-        <CustomLink text={"New"} to="/patient/appointments/new" />
       </div>
 
-      <div className="px-2 ">
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <div className="px-2 ">
-            <AppointmentTable
-              tableTitle={"Notifications"}
-              itemsRange={itemsRange}
-              itemsToShowAtATime={itemsToShowAtATime}
-              appointments={appointments}
-              totalItems={totalItems}
-              setItemsRange={setItemsRange}
-              viewRole="patient"
-            />
-          </div>
-        )}
-      </div>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="px-2 ">
+          <AppointmentTable
+            tableTitle={"Notifications"}
+            itemsRange={itemsRange}
+            itemsToShowAtATime={itemsToShowAtATime}
+            appointments={appointments}
+            totalItems={totalItems}
+            setItemsRange={setItemsRange}
+            viewRole="doctor"
+          />
+        </div>
+      )}
     </section>
   );
 }

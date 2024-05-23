@@ -1,33 +1,34 @@
 import { useEffect, useState } from "react";
-import { SamplePatients } from "../../../sampleData/samplePatients";
-import { SampleNotifications } from "../../../sampleData/sampleNotification";
 import Loader from "../../../Components/loader";
 import NotificationTable from "../../../Components/notificationTable";
+import { SampleDoctors } from "../../../sampleData/sampleDoctors";
+import { SampleNotifications } from "../../../sampleData/sampleNotification";
 
+const sampleDoctor = SampleDoctors[0];
 const itemsToShowAtATime = 5;
-const sampleUser = SamplePatients[0]
 
-export default function AllNotifications() {
-  const [pateint, setPatient] = useState({});
+export default function DoctorNotifications() {
+  const [doctor, setDoctor] = useState({});
   const [notifications, setNotifications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [itemsRange, setItemsRange] = useState({
     start: 0,
     end: itemsToShowAtATime - 1,
   });
-  const [totalItems, setTotalItems] = useState(0)
+  const [totalItems, setTotalItems] = useState(0);
 
   const makePatientDataRequest = () => {
     setTimeout(() => {
-      setPatient(sampleUser);
+        setDoctor(sampleDoctor);
     }, 500);
   };
 
   const makePateintNotificationRequest = () => {
     setIsLoading(true);
+  console.log("Hello : ", doctor.id)
     setTimeout(() => {
       const tempNotifications = SampleNotifications.filter(
-        (notificationItem) => notificationItem.toId == pateint.id
+        (notificationItem) => notificationItem.toId == doctor.id
       );
       setNotifications(
         tempNotifications.slice(itemsRange.start, itemsRange.end + 1)
@@ -37,14 +38,13 @@ export default function AllNotifications() {
     }, 500);
   };
 
-
   useEffect(() => {
     makePatientDataRequest();
-  });
+  }, []);
 
   useEffect(() => {
     makePateintNotificationRequest();
-  }, [pateint, itemsRange]);
+  }, [doctor, itemsRange]);
 
   return (
     <section className="w-full flex flex-col ">
@@ -59,8 +59,9 @@ export default function AllNotifications() {
             notifications={notifications}
             itemsRange={itemsRange}
             totalItems={totalItems}
+            itemsToShowAtATime={itemsToShowAtATime}
             tableTitle={"Notifications"}
-            viewRole="patient"
+            viewRole="doctor"
             setItemsRange={setItemsRange}
           />
         </div>
