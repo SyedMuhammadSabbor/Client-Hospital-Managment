@@ -7,10 +7,14 @@ import GetStartedPage from "./pages/get-started";
 import Patient from "./pages/patient";
 import NotFound from "./pages/not-found";
 import Doctor from "./pages/doctor";
+import Admin from "./pages/admin";
+import DevNavigationMenu from "./Components/devNavigationMenu";
 
 function App() {
   return (
     <>
+      <DevNavigationMenu />
+
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/get-started">
@@ -23,11 +27,10 @@ function App() {
         {/* Child routes are present in parent root file i.e index.jsx */}
         <Route path="/patient/*" element={<Patient />} />
         <Route path="/doctor/*" element={<Doctor />} />
+        <Route path="/admin/*" element={<Admin />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
-
-
     </>
   );
 }

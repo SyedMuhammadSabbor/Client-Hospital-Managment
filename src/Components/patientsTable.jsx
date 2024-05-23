@@ -1,6 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { prevClick } from "./utils/prevClick";
-import { nextClick } from "./utils/nextClick";
 import Button from "./button";
 
 export default function PatientsTable({
@@ -24,24 +22,49 @@ export default function PatientsTable({
         break;
     }
   };
-
   const handlePrevClick = () => {
-    prevClick(itemsRange, itemsToShowAtATime, setItemsRange);
+    console.log(itemsRange);
+
+    if (itemsRange.start - itemsToShowAtATime >= 0) {
+      if (itemsRange.start - itemsRange.end == 0) {
+        // == 0
+        setItemsRange((prev) => ({
+          start: prev.start - itemsToShowAtATime,
+          end: prev.end - 1,
+        }));
+      } else if (itemsRange.end - itemsRange.start > 0) {
+        // >0
+        setItemsRange((prev) => ({
+          start: prev.start - itemsToShowAtATime,
+          end: prev.start - 1,
+        }));
+      }
+      console.log("called ");
+    }
   };
 
   const handleNextClick = () => {
-    nextClick(itemsRange, itemsToShowAtATime, setItemsRange);
+    if (itemsRange.end + itemsToShowAtATime <= totalItems) {
+      // minimum items
+      setItemsRange((prev) => ({
+        start: prev.start + itemsToShowAtATime,
+        end: prev.end + itemsToShowAtATime,
+      }));
+    } else if (itemsRange.end < totalItems) {
+      // we have less items than minimum
+      setItemsRange((prev) => ({
+        start: prev.end + 1,
+        end: totalItems - 1, // total items is index based
+      }));
+    }
   };
-
   return (
     <div className="w-full flex flex-col items-center">
       <table className="w-[90%] border-collapse divide-y divide-designColor2 text-sm md:text-base">
         <thead>
           <tr className=" bg-designColor1 text-white">
             <th className="px-2 py-1 md:px-4 md:py-2 text-left">#</th>
-            <th className="px-2 py-1 md:px-4 md:py-2 text-center">
-              Patient
-            </th>
+            <th className="px-2 py-1 md:px-4 md:py-2 text-center">Patient</th>
             <th className="px-2 py-1 md:px-4 md:py-2 text-center">Id</th>
             <th className="px-2 py-1 md:px-4 md:py-2 text-right">Action</th>
           </tr>
@@ -49,13 +72,10 @@ export default function PatientsTable({
         <tbody>
           {patients.length <= 0 ? (
             <tr>
-              <td className="text-sm text-nowrap lg:text-base">
-                No Patient
-              </td>
+              <td className="text-sm text-nowrap lg:text-base">No Patient</td>
             </tr>
           ) : (
             patients.map((patient, index) => {
-        
               return (
                 <tr key={index} className="text-gray-700 hover:bg-gray-100">
                   <td className="px-2 py-1 md:px-4 md:py-2">

@@ -9,7 +9,7 @@ import { SampleDoctors } from "../sampleData/sampleDoctors";
 const itemsToShowAtATime = 5;
 const sampleDoctor = SampleDoctors[0];
 
-export default function PatientView() {
+export default function PatientView({viewRole = "doctor"}) {
   const [doctor, setDoctor] = useState({});
   const [doctorLoading, setDoctorLoading] = useState(true);
 
@@ -138,7 +138,7 @@ export default function PatientView() {
                     appointments={appointments}
                     totalItems={totalItems}
                     setItemsRange={setItemsRange}
-                    viewRole="doctor"
+                    viewRole={viewRole}
                   />
                 )}
               </div>

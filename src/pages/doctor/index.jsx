@@ -23,7 +23,7 @@ export default function Doctor() {
 
             <Route path="/notifications">
               <Route path="" element={<DoctorNotifications />} />
-              <Route path=":notificationId" element={<NotificationView />} />
+              <Route path=":notificationId" element={<NotificationView viewRole="doctor"/>} />
             </Route>
 
             <Route path="/patients">

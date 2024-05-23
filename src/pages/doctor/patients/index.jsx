@@ -38,7 +38,7 @@ export default function MyPatients() {
 
   useEffect(() => {
     makeDoctorDataRequest();
-  });
+  }, []);
 
   useEffect(() => {
     makePateintsDataRequest();

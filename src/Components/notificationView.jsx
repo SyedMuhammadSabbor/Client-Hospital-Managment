@@ -5,6 +5,8 @@ import Loader from "./loader";
 import { SampleNotifications } from "../sampleData/sampleNotification";
 import NotFound from "../pages/not-found";
 import PateintNotFoundPage from "../pages/patient/not-found";
+import DoctorNotFoundPage from "../pages/doctor/not-found";
+import AdminNotFoundPage from "../pages/admin/not-found";
 
 export default function NotificationView({ viewRole = "patient" }) {
   const params = useParams();
@@ -25,8 +27,21 @@ export default function NotificationView({ viewRole = "patient" }) {
       }
       //   console.log("temp: ", temp);
       const tempIndex = SampleNotifications.findIndex((e) => e.id == temp.id);
-      SampleNotifications[tempIndex].viewed = true;
+      switch (viewRole) {
+        case "patient":
+          temp.viewedBy.patient = true;
+          break;
+        case "doctor":
+          temp.viewedBy.doctor = true;
+          break;
+        case "admin":
+          temp.viewedBy.admin = true;
+          break;
+        default:
+          break;
+      }
 
+      SampleNotifications[tempIndex] = temp;
       setNotificationDetails(temp);
       setIsLoading(false);
       setNotificationFound(true);
@@ -50,6 +65,10 @@ export default function NotificationView({ viewRole = "patient" }) {
     switch (viewRole) {
       case "patient":
         return <PateintNotFoundPage />;
+      case "doctor":
+        return <DoctorNotFoundPage />;
+      case "admin":
+        return <AdminNotFoundPage />;
       default:
         return <NotFound />;
     }
@@ -67,7 +86,7 @@ export default function NotificationView({ viewRole = "patient" }) {
           <div className="pt-4">
             <p className="text-sm">
               Title:{" "}
-              <span className="font-medium">{notificationDetails.name}</span>
+              <span className="font-medium">{notificationDetails.title}</span>
             </p>
             <p className="text-sm">
               From:{" "}

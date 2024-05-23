@@ -1,27 +1,23 @@
 import Button from "./button";
 import { useNavigate } from "react-router-dom";
 
-export default function AppointmentTable({
-  appointments,
-  itemsRange = { start, end },
+export default function DoctorTable({
+  doctors,
+  itemsRange = { start: 0, end: 0 },
   totalItems,
   itemsToShowAtATime,
   viewRole = "patient",
   setItemsRange,
 }) {
-  const navigate = useNavigate();
+  const naviagte = useNavigate();
 
-  const handleAppointmentView = (appointmentId) => {
-    console.log("view role: ", viewRole);
+  const handleDoctorProfileView = (doctorId) => {
     switch (viewRole) {
-      case "doctor":
-        navigate(`/doctor/appointments/${appointmentId}`);
+      case "patient":
+        naviagte(`/patient/doctors/${doctorId}`);
         break;
       case "admin":
-        navigate(`/admin/appointments/${appointmentId}`);
-        break;
-      case "patient":
-        navigate(`/patient/appointments/${appointmentId}`);
+        naviagte(`/admin/doctors/${doctorId}`);
         break;
       default:
         break;
@@ -29,6 +25,8 @@ export default function AppointmentTable({
   };
 
   const handlePrevClick = () => {
+    console.log(itemsRange);
+
     if (itemsRange.start - itemsToShowAtATime >= 0) {
       if (itemsRange.start - itemsRange.end == 0) {
         // == 0
@@ -62,65 +60,45 @@ export default function AppointmentTable({
     }
   };
 
+  console.log("Doctors: ", doctors);
+
   return (
-    <div className="w-full flex flex-col items-center">
+    <section className="w-full flex flex-col items-center">
       <table className="w-[90%] border-collapse divide-y divide-designColor2 text-sm md:text-base">
         <thead>
           <tr className=" bg-designColor1 text-white">
             <th className="px-2 py-1 md:px-4 md:py-2 text-left">#</th>
-            <th className="px-2 py-1 md:px-4 md:py-2 text-center">Name</th>
-            <th className="px-2 py-1 md:px-4 md:py-2 text-center">Time</th>
-            <th className="px-2 py-1 md:px-4 md:py-2 text-center">Dated</th>
-            <th className="px-2 py-1 md:px-4 md:py-2 text-right">Status</th>
+            <th className="px-2 py-1 md:px-4 md:py-2 text-center">Doctor</th>
+            <th className="px-2 py-1 md:px-4 md:py-2 text-center">Field</th>
+            <th className="px-2 py-1 md:px-4 md:py-2 text-right">Action</th>
           </tr>
         </thead>
         <tbody>
-          {appointments.map((appointment, index) => {
-            const tempDate = new Date(appointment.dated);
-            const formattedDate = tempDate.toLocaleDateString("en-US", {
-              year: "2-digit",
-              month: "short",
-              day: "2-digit",
-            });
-            return (
-              <tr
-                key={index}
-                className="text-gray-700 hover:bg-gray-100 cursor-pointer"
-                onClick={() => handleAppointmentView(appointment.id)}
-              >
+          {doctors.length == 0 ? (
+            <tr>
+              <td className="text-sm text-nowrap lg:text-base">No Doctors</td>
+            </tr>
+          ) : (
+            doctors.map((doctor, index) => (
+              <tr key={index} className="text-gray-700 hover:bg-gray-100">
                 <td className="px-2 py-1 md:px-4 md:py-2">
                   {itemsRange.start + index + 1}
                 </td>
                 <td className="px-2 py-1 md:px-4 md:py-2 text-center">
-                  {appointment.doctorName}
+                  {doctor.name}
                 </td>
                 <td className="px-2 py-1 md:px-4 md:py-2 text-center">
-                  {appointment.hoursTime > 12
-                    ? `${appointment.hoursTime % 12} PM`
-                    : `${appointment.hoursTime} AM`}
+                  {doctor.field}
                 </td>
-                <td className="px-2 py-1 md:px-4 md:py-2 text-center  text-nowrap">
-                  {formattedDate}
-                </td>
-
-                <td className="px-2 py-1 md:px-4 md:py-2 flex space-x-2 justify-end text-sm md:text-base !w-full ">
-                  <span
-                    className={`${
-                      appointment.status == "scheduled"
-                        ? "bg-green-700 text-white"
-                        : appointment.status == "pending"
-                        ? "bg-designColor2 text-white"
-                        : appointment.status == "deleted"
-                        ? "bg-red-700 text-white"
-                        : "bg-designColor1 text-black"
-                    }  mx-1 px-1 rounded capitalize`}
-                  >
-                    {appointment.status}
-                  </span>
+                <td className="px-2 py-1 md:px-4 md:py-2 text-right">
+                  <Button
+                    text={"profile"}
+                    handleOnClick={() => handleDoctorProfileView(doctor.id)}
+                  />
                 </td>
               </tr>
-            );
-          })}
+            ))
+          )}
         </tbody>
         <tfoot className="">
           <tr className="text-white w-full relative ">
@@ -141,6 +119,6 @@ export default function AppointmentTable({
           </tr>
         </tfoot>
       </table>
-    </div>
+    </section>
   );
 }

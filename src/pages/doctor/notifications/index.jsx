@@ -25,9 +25,10 @@ export default function DoctorNotifications() {
 
   const makePateintNotificationRequest = () => {
     setIsLoading(true);
+  console.log("Hello : ", doctor.id)
     setTimeout(() => {
       const tempNotifications = SampleNotifications.filter(
-        (notificationItem) => notificationItem.doctorId == doctor.id
+        (notificationItem) => notificationItem.toId == doctor.id
       );
       setNotifications(
         tempNotifications.slice(itemsRange.start, itemsRange.end + 1)
@@ -39,7 +40,7 @@ export default function DoctorNotifications() {
 
   useEffect(() => {
     makePatientDataRequest();
-  });
+  }, []);
 
   useEffect(() => {
     makePateintNotificationRequest();
@@ -58,6 +59,7 @@ export default function DoctorNotifications() {
             notifications={notifications}
             itemsRange={itemsRange}
             totalItems={totalItems}
+            itemsToShowAtATime={itemsToShowAtATime}
             tableTitle={"Notifications"}
             viewRole="doctor"
             setItemsRange={setItemsRange}

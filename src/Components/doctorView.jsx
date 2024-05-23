@@ -34,6 +34,20 @@ export default function DoctorView({ viewRole = "patient" }) {
     }, 2000);
   };
 
+  const handleApproveDoctor = (doctorId) => {
+    const tempDoctor = SampleDoctors.find(
+      (doctorItem) => doctorItem.id == doctorDetails.id
+    );
+    const tempDoctorIndex = SampleDoctors.findIndex(
+      (doctorItem) => doctorItem.id == doctorDetails.id
+    );
+    tempDoctor.status = "pending";
+    SampleDoctors[tempDoctorIndex] = tempDoctor;
+
+    // send notification
+    
+  };
+
   const handleGoBack = () => {
     navigate(-1);
   };
@@ -77,6 +91,7 @@ export default function DoctorView({ viewRole = "patient" }) {
                   {doctorDetails.qualification}
                 </span>
               </h2>
+              {doctorDetails.status == "pending" && <Button text={"approve"} />}
             </div>
             <div className="flex-[25%] flex items-center justify-center">
               <img

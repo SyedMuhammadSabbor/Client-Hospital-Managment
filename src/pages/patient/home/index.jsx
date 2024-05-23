@@ -82,19 +82,6 @@ export default function Home() {
               <h2>
                 Age: <span className="font-semibold">{patient.age}</span>
               </h2>
-              <h2 className="my-1">
-                {" "}
-                Status:
-                <span
-                  className={`${
-                    patient.currentlyAdmitted
-                      ? "bg-green-700 text-white"
-                      : "bg-designColor1 text-black"
-                  } w-min mx-1 px-1 rounded text-xs`}
-                >
-                  {patient.currentlyAdmitted ? "Admitted" : "Discharged"}
-                </span>
-              </h2>
             </div>
 
             <div className="py-2 md:py-4">

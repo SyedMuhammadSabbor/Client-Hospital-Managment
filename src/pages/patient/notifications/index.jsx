@@ -27,7 +27,7 @@ export default function AllNotifications() {
     setIsLoading(true);
     setTimeout(() => {
       const tempNotifications = SampleNotifications.filter(
-        (notificationItem) => notificationItem.patientId == pateint.id
+        (notificationItem) => notificationItem.toId == pateint.id
       );
       setNotifications(
         tempNotifications.slice(itemsRange.start, itemsRange.end + 1)
