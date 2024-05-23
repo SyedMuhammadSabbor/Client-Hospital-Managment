@@ -3,11 +3,9 @@ import { SampleAppintments } from "../sampleData/sampleAppointments";
 import Loader from "./loader";
 import Button from "./button";
 import { useNavigate, useParams } from "react-router-dom";
-import PateintNotFoundPage from "../pages/patient/not-found";
-import NotFound from "../pages/not-found";
 import { SampleDoctors } from "../sampleData/sampleDoctors";
-import DoctorNotFoundPage from "../pages/doctor/not-found";
 import { sendNotification } from "./utils/sendNotification";
+import NotFoundPage from "../pages/not-found";
 
 export default function AppointmentView({ viewRole = "patient" }) {
   const params = useParams();
@@ -175,11 +173,13 @@ export default function AppointmentView({ viewRole = "patient" }) {
   if (!appointmentDetailsFound) {
     switch (viewRole) {
       case "patient":
-        return <PateintNotFoundPage />;
+        return <NotFoundPage redirectTo="/patient" />;
       case "doctor":
-        return <DoctorNotFoundPage />;
+        return <NotFoundPage redirectTo="/doctor" />;
+      case "admin":
+        return <NotFoundPage redirectTo="/admin" />;
       default:
-        return <NotFound />;
+        return <NotFoundPage redirectTo="/" />;
     }
   }
 

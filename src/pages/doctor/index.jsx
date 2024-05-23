@@ -1,13 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 import DoctorMenu from "./menu";
 import Home from "./home";
-import NotFound from "./not-found";
 import AppointmentView from "../../Components/appointmentView";
 import Appointments from "./appointments";
 import DoctorNotifications from "./notifications";
 import NotificationView from "../../Components/notificationView";
 import MyPatients from "./patients";
 import PatientView from "../../Components/patientView";
+import NotFoundPage from "../not-found";
 
 export default function Doctor() {
   return (
@@ -40,7 +40,7 @@ export default function Doctor() {
               />
             </Route>
 
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<NotFoundPage redirectTo={"/doctorF"} />} />
           </Route>
         </Routes>
       </div>

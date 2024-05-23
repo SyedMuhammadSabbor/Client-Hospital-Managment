@@ -4,11 +4,11 @@ import AllDoctors from "./all-doctors";
 import Home from "./home";
 import Appointments from "./appointments";
 import AppointmentView from "../../Components/appointmentView";
-import PateintNotFoundPage from "./not-found";
 import DoctorView from "../../Components/doctorView";
 import NotificationView from "../../Components/notificationView";
 import AllNotifications from "./notifications";
 import NewAppointment from "./new-appointment";
+import NotFoundPage from "../not-found";
 
 export default function Patient() {
   return (
@@ -24,21 +24,30 @@ export default function Patient() {
 
             <Route path="/notifications">
               <Route path="" element={<AllNotifications />} />
-              <Route path=":notificationId" element={<NotificationView viewRole="patient"/>} />
+              <Route
+                path=":notificationId"
+                element={<NotificationView viewRole="patient" />}
+              />
             </Route>
 
             <Route path="/doctors">
               <Route path="" element={<AllDoctors />} />
-              <Route path=":doctorId" element={<DoctorView viewRole="patient"/>} />
+              <Route
+                path=":doctorId"
+                element={<DoctorView viewRole="patient" />}
+              />
             </Route>
 
             <Route path="/appointments">
               <Route path="" element={<Appointments />} />
               <Route path="new" element={<NewAppointment />} />
-              <Route path=":appointmentId" element={<AppointmentView viewRole="patient" />} />
+              <Route
+                path=":appointmentId"
+                element={<AppointmentView viewRole="patient" />}
+              />
             </Route>
 
-            <Route path="*" element={<PateintNotFoundPage />} />
+            <Route path="*" element={<NotFoundPage redirectTo="/patient" />} />
           </Route>
         </Routes>
       </div>

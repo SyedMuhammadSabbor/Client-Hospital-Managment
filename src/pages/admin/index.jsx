@@ -1,16 +1,15 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./home";
 import AdminMenu from "./menu";
-import AdminNotFoundPage from "./not-found";
 import NotificationView from "../../Components/notificationView";
 import AdminNotifications from "./notifications";
 import Patients from "./patients";
 import PatientView from "../../Components/patientView";
 import AppointmentView from "../../Components/appointmentView";
 import Appointments from "./appointments";
-import DoctorTable from "../../Components/doctorTable";
 import DoctorView from "../../Components/doctorView";
 import Doctors from "./doctor";
+import NotFoundPage from "../not-found";
 
 
 export default function Admin() {
@@ -49,7 +48,7 @@ export default function Admin() {
                 />
               </Route>
   
-              <Route path="*" element={<AdminNotFoundPage />} />
+              <Route path="*" element={<NotFoundPage redirectTo="/admin" />} />
             </Route>
           </Routes>
         </div>

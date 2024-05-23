@@ -3,10 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Button from "./button";
 import Loader from "./loader";
 import { SampleNotifications } from "../sampleData/sampleNotification";
-import NotFound from "../pages/not-found";
-import PateintNotFoundPage from "../pages/patient/not-found";
-import DoctorNotFoundPage from "../pages/doctor/not-found";
-import AdminNotFoundPage from "../pages/admin/not-found";
+import NotFoundPage from "../pages/not-found";
 
 export default function NotificationView({ viewRole = "patient" }) {
   const params = useParams();
@@ -64,13 +61,13 @@ export default function NotificationView({ viewRole = "patient" }) {
   if (!notificationFound) {
     switch (viewRole) {
       case "patient":
-        return <PateintNotFoundPage />;
+        return <NotFoundPage redirectTo="/patient" />;
       case "doctor":
-        return <DoctorNotFoundPage />;
+        return <NotFoundPage redirectTo="/doctor" />;
       case "admin":
-        return <AdminNotFoundPage />;
+        return <NotFoundPage redirectTo="/admin" />;
       default:
-        return <NotFound />;
+        <NotFoundPage redirectTo="/" />;
     }
   }
 
