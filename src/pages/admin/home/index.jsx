@@ -3,6 +3,7 @@ import { SampleAdmins } from "../../../sampleData/sampleAdmins";
 import Loader from "../../../Components/loader";
 import { SampleNotifications } from "../../../sampleData/sampleNotification";
 import NotificationTable from "../../../Components/notificationTable";
+import CustomLink from "../../../Components/link";
 
 const sampleAdmin = SampleAdmins[0];
 const itemsToShowAtATime = 5;
@@ -80,6 +81,7 @@ export default function Home() {
               <h2>
                 Age: <span className="font-semibold">{admin.age}</span>
               </h2>
+              <CustomLink to="/admin/edit" text={"Edit"} />
             </div>
 
             <div>

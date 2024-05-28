@@ -3,6 +3,7 @@ import { SampleDoctors } from "../../../sampleData/sampleDoctors";
 import { SampleAppintments } from "../../../sampleData/sampleAppointments";
 import Loader from "../../../Components/loader";
 import AppointmentTable from "../../../Components/appointmentsTable";
+import CustomLink from "../../../Components/link";
 
 const sampleDoctor = SampleDoctors[0];
 const itemsToShowAtATime = 5;
@@ -82,6 +83,8 @@ export default function Home() {
               <h2>
                 Age: <span className="font-semibold">{doctor.age}</span>
               </h2>
+
+              <CustomLink to="/doctor/edit" text={"Edit"} />
             </div>
 
             <div className="py-2 md:py-4">

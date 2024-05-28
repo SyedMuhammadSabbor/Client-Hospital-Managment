@@ -3,6 +3,7 @@ import AppointmentTable from "../../../Components/appointmentsTable";
 import { SampleAppintments } from "../../../sampleData/sampleAppointments";
 import Loader from "../../../Components/loader";
 import { SampleAdmins } from "../../../sampleData/sampleAdmins";
+import CustomLink from "../../../Components/link";
 
 const itemsToShowAtATime = 5;
 
@@ -59,6 +60,7 @@ export default function Appointments() {
             <p className="text-textColor font-medium  md:text-lg lg:text-xl ">
               Appointment(s)
             </p>
+            <CustomLink text={"New"} to="/admin/appointments/new" />
           </div>
           {appoitmentsLoading ? (
             <Loader />

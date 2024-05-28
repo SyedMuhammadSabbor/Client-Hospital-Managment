@@ -7,8 +7,9 @@ import AppointmentView from "../../Components/appointmentView";
 import DoctorView from "../../Components/doctorView";
 import NotificationView from "../../Components/notificationView";
 import AllNotifications from "./notifications";
-import NewAppointment from "./new-appointment";
+import NewAppointment from "../new-appointment";
 import NotFoundPage from "../not-found";
+import EditPateint from "./edit";
 
 export default function Patient() {
   return (
@@ -21,6 +22,7 @@ export default function Patient() {
         <Routes>
           <Route path="/">
             <Route path="" element={<Home />} />
+            <Route path="edit" element={<EditPateint />} />
 
             <Route path="/notifications">
               <Route path="" element={<AllNotifications />} />

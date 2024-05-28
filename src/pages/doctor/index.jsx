@@ -8,6 +8,7 @@ import NotificationView from "../../Components/notificationView";
 import MyPatients from "./patients";
 import PatientView from "../../Components/patientView";
 import NotFoundPage from "../not-found";
+import EditDoctor from "./edit";
 
 export default function Doctor() {
   return (
@@ -20,10 +21,14 @@ export default function Doctor() {
         <Routes>
           <Route path="/">
             <Route path="" element={<Home />} />
+            <Route path="edit" element={<EditDoctor />} />
 
             <Route path="/notifications">
               <Route path="" element={<DoctorNotifications />} />
-              <Route path=":notificationId" element={<NotificationView viewRole="doctor"/>} />
+              <Route
+                path=":notificationId"
+                element={<NotificationView viewRole="doctor" />}
+              />
             </Route>
 
             <Route path="/patients">
@@ -40,7 +45,10 @@ export default function Doctor() {
               />
             </Route>
 
-            <Route path="*" element={<NotFoundPage redirectTo={"/doctorF"} />} />
+            <Route
+              path="*"
+              element={<NotFoundPage redirectTo={"/doctorF"} />}
+            />
           </Route>
         </Routes>
       </div>

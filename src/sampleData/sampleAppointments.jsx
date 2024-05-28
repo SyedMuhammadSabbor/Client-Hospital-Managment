@@ -8,7 +8,7 @@ export const SampleAppintments = [
     patientName: "Ali",
     dated: 5916287487676,
     hoursTime: 14,
-    status: "scheduled",
+    status: "pending",
     timePassed: false,
     details: {
       postDetailsWritten: false,
@@ -120,3 +120,5 @@ export const SampleAppintments = [
     },
   },
 ];
+
+
