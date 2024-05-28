@@ -3,9 +3,10 @@ import { SamplePatients } from "../../../sampleData/samplePatients";
 import Loader from "../../../Components/loader";
 import { SampleAppintments } from "../../../sampleData/sampleAppointments";
 import AppointmentTable from "../../../Components/appointmentsTable";
+import CustomLink from "../../../Components/link";
 
 const itemsToShowAtATime = 5;
-const samplePatient = SamplePatients[0]
+const samplePatient = SamplePatients[0];
 
 export default function Home() {
   const [patient, setPatient] = useState({});
@@ -82,6 +83,7 @@ export default function Home() {
               <h2>
                 Age: <span className="font-semibold">{patient.age}</span>
               </h2>
+              <CustomLink to="/patient/edit" text={"Edit"} />
             </div>
 
             <div className="py-2 md:py-4">
@@ -95,13 +97,13 @@ export default function Home() {
                   "no Schduled appointments"
                 ) : (
                   <AppointmentTable
-                  tableTitle={"Notifications"}
-                  itemsRange={itemsRange}
-                  itemsToShowAtATime={itemsToShowAtATime}
-                  appointments={scheduledAppointments}
-                  totalItems={totalItems}
-                  setItemsRange={setItemsRange}
-                  viewRole="patient"
+                    tableTitle={"Notifications"}
+                    itemsRange={itemsRange}
+                    itemsToShowAtATime={itemsToShowAtATime}
+                    appointments={scheduledAppointments}
+                    totalItems={totalItems}
+                    setItemsRange={setItemsRange}
+                    viewRole="patient"
                   />
                 )}
               </div>

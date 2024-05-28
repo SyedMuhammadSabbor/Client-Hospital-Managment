@@ -17,7 +17,7 @@ export default function Button({
           ? "!bg-red-700 text-white hover:border-black"
           : "bg-designColor1  hover:border-designColor2"
       }  ${
-        disabled ? "cursor-not-allowed" : "cursor-pointer"
+        disabled ? "cursor-not-allowed bg-primary text-white" : "cursor-pointer"
       }   border border-secondary rounded px-2 active:scale-95 `}
     >
       {text}

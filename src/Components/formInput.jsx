@@ -5,6 +5,9 @@ export default function FormInput({
   handleChange,
   id,
   required = false,
+  disabled=false,
+  min=null,
+  max=null,
 }) {
   return (
     <input
@@ -14,6 +17,9 @@ export default function FormInput({
       onChange={handleChange}
       id={id}
       required={required}
+      disabled={disabled}
+      min={min}
+      max={max}
       className="w-full bg-white  text-textColor my-1 p-1 border-designColor2 border rounded focus:outline-none focus:border-textColor"
     />
   );

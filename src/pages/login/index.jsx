@@ -66,7 +66,7 @@ export default function LoginPage() {
             <p>
               Do not have an account?{" "}
               <a
-                href="/get-started/signup"
+                href="/get-started"
                 className="font-semibold underline hover:scale-95"
               >
                 Signup

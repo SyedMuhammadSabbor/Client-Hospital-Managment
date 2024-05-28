@@ -8,14 +8,13 @@ import Patient from "./pages/patient";
 import NotFound from "./pages/not-found";
 import Doctor from "./pages/doctor";
 import Admin from "./pages/admin";
-import DevNavigationMenu from "./Components/devNavigationMenu";
 import ProtectedRoute from "./Components/protectedRoute";
+import ErrorNotifications from "./Components/errorNotidication";
 
 function App() {
   return (
     <>
-      <DevNavigationMenu />
-
+      <ErrorNotifications />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/get-started">
@@ -26,14 +25,20 @@ function App() {
 
         {/* for child routing */}
         {/* Child routes are present in parent root file i.e index.jsx */}
-
         <Route
           path="/patient/*"
-          element={<ProtectedRoute component={Patient} />}
+          element={
+            <ProtectedRoute allowedRole={"patient"} component={Patient} />
+          }
         />
-
-        <Route path="/doctor/*" element={<Doctor />} />
-        <Route path="/admin/*" element={<Admin />} />
+        <Route
+          path="/doctor/*"
+          element={<ProtectedRoute allowedRole={"doctor"} component={Doctor} />}
+        />
+        <Route
+          path="/admin/*"
+          element={<ProtectedRoute allowedRole={"admin"} component={Admin} />}
+        />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

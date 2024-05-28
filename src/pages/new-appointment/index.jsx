@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
-import { SamplePatients } from "../../../sampleData/samplePatients";
-import Loader from "../../../Components/loader";
-import FormInput from "../../../Components/formInput";
-import { SampleDoctors } from "../../../sampleData/sampleDoctors";
-import { SampleAppintments } from "../../../sampleData/sampleAppointments";
-import Button from "../../../Components/button";
+import { SamplePatients } from "../../sampleData/samplePatients";
+import Loader from "../../Components/loader";
+import FormInput from "../../Components/formInput";
+import { SampleDoctors } from "../../sampleData/sampleDoctors";
+import { SampleAppintments } from "../../sampleData/sampleAppointments";
+import Button from "../../Components/button";
 import { useNavigate } from "react-router-dom";
-import { sendNotification } from "../../../Components/utils/sendNotification";
+import { sendNotification } from "../../Components/utils/sendNotification";
 
 const sampleUser = SamplePatients[0];
-const minDate = new Date(new Date().getTime() + 1 * 24 * 60 * 60 * 1000)
+
+const todayDate = new Date().setUTCHours(0, 0, 0, 0);
+const minDate = new Date(todayDate + 1 * 24 * 60 * 60 * 1000)
   .toISOString()
   .slice(0, 10); // Tomorrows's date in YYYY-MM-DD format
-const maxDate = new Date(new Date().getTime() + 8 * 24 * 60 * 60 * 1000)
+const maxDate = new Date(todayDate + 7 * 24 * 60 * 60 * 1000)
   .toISOString()
   .slice(0, 10); // 7 days from tomorrow
 
@@ -37,18 +39,26 @@ export default function NewAppointment({ viewRole = "patient" }) {
   const [doctorFields, setDoctorFields] = useState([]);
   const [allDoctorsNameAndId, setAllDoctorsNameAndId] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState({});
+  const [selectedDateSchedule, setSelectedDateSchedule] = useState({});
 
   const navigate = useNavigate();
 
   const makeDataRequest = () => {
     setIsLaoding(true);
     setTimeout(() => {
-      setUserDetails(sampleUser);
-      setNewAppointmentDetails((prev) => ({
-        ...prev,
-        patientName: sampleUser.name,
-        patientId: sampleUser.id,
-      }));
+      // base on view rol
+      // if view role is admin, then admin must provide patient name and id
+      // if view role is patiet, get pateint data from token
+      if (viewRole == "patient") {
+        //
+        setUserDetails(sampleUser);
+        setNewAppointmentDetails((prev) => ({
+          ...prev,
+          patientName: sampleUser.name,
+          patientId: sampleUser.id,
+        }));
+      }
+
       setIsLaoding(false);
     }, 1000);
   };
@@ -78,6 +88,36 @@ export default function NewAppointment({ viewRole = "patient" }) {
     setSelectedDoctor(doctor);
   };
 
+  const makeselectedDateScheduleDataRequest = (selectedDate) => {
+    let tempSchedule = selectedDoctor.schedule.find(
+      (scheduleItem) =>
+        scheduleItem.day.start > selectedDate &&
+        scheduleItem.day.end <= selectedDate
+    );
+    if (!tempSchedule) {
+      const tempDoctorIndex = SampleDoctors.findIndex(
+        (doctorItem) => doctorItem.id == selectedDoctor.id
+      );
+
+      const tempStartDate = new Date().setUTCHours(0, 0, 0, 0);
+      const tempEndDate = tempStartDate + 1 * 24 * 60 * 60 * 1000; // 1 day ahead
+      // create new schdule
+      tempSchedule = {
+        day: {
+          start: tempStartDate,
+          end: tempEndDate,
+        },
+        currentAppointments: 0,
+        appointedHours: [],
+      };
+      selectedDoctor.schedule.push(tempSchedule);
+      SampleDoctors[tempDoctorIndex] = selectedDoctor;
+    }
+    console.log("selected doctor: ", selectedDoctor);
+    console.log("tempSchedule: ", tempSchedule);
+    setSelectedDateSchedule(tempSchedule);
+  };
+
   useEffect(() => {
     makeDataRequest();
     makeDoctorFieldsRequest();
@@ -87,6 +127,13 @@ export default function NewAppointment({ viewRole = "patient" }) {
     setNewAppointmentDetails((prev) => ({
       ...prev,
       patientName: e.target.value,
+    }));
+  };
+
+  const handlePateintIdChange = (e) => {
+    setNewAppointmentDetails((prev) => ({
+      ...prev,
+      patientId: e.target.value,
     }));
   };
 
@@ -141,6 +188,8 @@ export default function NewAppointment({ viewRole = "patient" }) {
 
   const handleAppointmentDateChange = (e) => {
     const tempDate = new Date(e.target.value).getTime();
+    console.log("date: ", tempDate);
+    makeselectedDateScheduleDataRequest(tempDate);
     setNewAppointmentDetails((prev) => ({ ...prev, dated: tempDate }));
   };
 
@@ -148,14 +197,20 @@ export default function NewAppointment({ viewRole = "patient" }) {
     e.preventDefault();
 
     // update doctor time table
-    selectedDoctor.currentAppointments++;
-    selectedDoctor.appointedHours.push(
-      newAppointmentDetails.hoursTime - selectedDoctor.appointmentHours.start
+    const tempDoctor = SampleDoctors.find(
+      (doctorItem) => doctorItem.id == newAppointmentDetails.doctorId
     );
+
+    const scheduleToUpdate = tempDoctor.schedule.find(
+      (schduleItem) =>
+        schduleItem.day.start > newAppointmentDetails.dated &&
+        schduleItem.day.end <= newAppointmentDetails.dated
+    );
+
     const doctorIndex = SampleDoctors.findIndex(
       (doctorItem) => doctorItem.id == selectedDoctor.id
     );
-    SampleDoctors[doctorIndex] = selectedDoctor;
+    SampleDoctors[doctorIndex] = tempDoctor;
 
     // update user appointments table
     SampleAppintments.unshift({
@@ -164,7 +219,7 @@ export default function NewAppointment({ viewRole = "patient" }) {
     });
 
     // update user notification
-    console.log("doctor id: ", newAppointmentDetails.doctorId)
+    console.log("doctor id: ", newAppointmentDetails.doctorId);
     const message =
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
     sendNotification(
@@ -226,6 +281,19 @@ export default function NewAppointment({ viewRole = "patient" }) {
               </label>
 
               <label>
+                <p className="text-sm text-textColor">Patient Id</p>
+                <FormInput
+                  id="patient-id"
+                  name="patient-id"
+                  type="text"
+                  required={true}
+                  placeholder="Patient Id"
+                  value={newAppointmentDetails.patientId}
+                  handleChange={handlePateintIdChange}
+                />
+              </label>
+
+              <label>
                 <p className="text-sm text-textColor">Problem Field</p>
                 <select
                   onChange={handleFieldChange}
@@ -262,9 +330,27 @@ export default function NewAppointment({ viewRole = "patient" }) {
               </label>
 
               <label>
-                <p className="text-sm text-textColor">Time </p>
+                <p className="text-sm text-textColor">Date </p>
                 {newAppointmentDetails.doctorName == "" ? (
-                  "Please select a doctor first"
+                  "Please seleact a doctor first"
+                ) : (
+                  <input
+                    type="date"
+                    name="dated"
+                    id="dated"
+                    min={minDate}
+                    max={maxDate}
+                    onChange={handleAppointmentDateChange}
+                    required
+                    className="w-full bg-white  text-textColor my-1 p-1 border-designColor2 border rounded focus:outline-none focus:border-textColor"
+                  />
+                )}
+              </label>
+
+              <label>
+                <p className="text-sm text-textColor">Time </p>
+                {newAppointmentDetails.dated == 0 ? (
+                  "Please select a Date first"
                 ) : (
                   <select
                     onChange={handleAppointmentTime}
@@ -276,27 +362,23 @@ export default function NewAppointment({ viewRole = "patient" }) {
                       (_, index) => (
                         <option
                           key={index}
-                          value={selectedDoctor.appointmentHours.start + index}
-                          disabled={selectedDoctor.appointedHours.includes(
+                          value={selectedDateSchedule.day.start + index}
+                          disabled={selectedDateSchedule.appointedHours.includes(
                             index
                           )}
                           className={`${
-                            selectedDoctor.appointedHours.includes(index)
+                            selectedDateSchedule.appointedHours.includes(index)
                               ? "text-red-800 font-semibold text-sm"
                               : "text-textColor "
                           }`}
                         >
-                          {selectedDoctor.appointmentHours.start + index > 12
+                          {selectedDateSchedule.day.start + index > 12
                             ? `${
-                                (selectedDoctor.appointmentHours.start +
-                                  index) %
-                                12
+                                (selectedDateSchedule.day.start + index) % 12
                               } P.M`
-                            : `${
-                                selectedDoctor.appointmentHours.start + index
-                              } A.M`}
+                            : `${selectedDateSchedule.day.start + index} A.M`}
                           {" - "}
-                          {selectedDoctor.appointedHours.includes(index)
+                          {selectedDateSchedule.appointedHours.includes(index)
                             ? "Booked"
                             : "Available"}
                         </option>
@@ -305,22 +387,6 @@ export default function NewAppointment({ viewRole = "patient" }) {
                   </select>
                 )}
               </label>
-
-              {/*  */}
-              <label>
-                <span className="text-sm text-textColor">Date </span>
-                <input
-                  type="date"
-                  name="dated"
-                  id="dated"
-                  min={minDate}
-                  max={maxDate}
-                  onChange={handleAppointmentDateChange}
-                  required
-                  className="w-full bg-white  text-textColor my-1 p-1 border-designColor2 border rounded focus:outline-none focus:border-textColor"
-                />
-              </label>
-              {/*  */}
 
               <label htmlFor="pre-details">
                 <p className="text-sm text-textColor">
